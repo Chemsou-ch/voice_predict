@@ -21,10 +21,8 @@ write("temp.wav", fs, audio)
 
 signal, sr = librosa.load("temp.wav", sr=16000)
 
-# trim silence
 signal, _ = librosa.effects.trim(signal, top_db=20)
 
-# pad/trim
 if len(signal) < 16000:
     signal = np.pad(signal, (0, 16000 - len(signal)))
 else:
