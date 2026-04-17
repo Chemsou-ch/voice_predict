@@ -8,7 +8,7 @@ labels = ['yes', 'no', 'stop', 'go']
 model = tf.keras.models.load_model("model.keras")
 
 fs = 16000
-duration = 1 
+duration = 2 
 
 print("Get ready...")
 print("Speak now!")
