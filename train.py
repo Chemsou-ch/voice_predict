@@ -10,17 +10,15 @@ from tensorflow.keras.layers import (
 )
 from tensorflow.keras.callbacks import EarlyStopping
 
-# Labels
+
 labels = ['yes', 'no', 'stop', 'go']
 
 X = []
 y = []
 
-# Feature extraction
 def extract_features(file_path):
     audio, sr = librosa.load(file_path, sr=16000)
 
-    # fixed length = 1 second
     if len(audio) < 16000:
         audio = np.pad(audio, (0, 16000 - len(audio)))
     else:
@@ -36,12 +34,10 @@ def extract_features(file_path):
 
     log_mel = librosa.power_to_db(mel, ref=np.max)
 
-    # normalize
     log_mel = (log_mel - np.mean(log_mel)) / (np.std(log_mel) + 1e-6)
 
     return log_mel
 
-# Load dataset
 for label_index, label in enumerate(labels):
     folder = f"dataset/{label}"
 
@@ -55,12 +51,11 @@ for label_index, label in enumerate(labels):
 X = np.array(X, dtype=np.float32)
 y = np.array(y)
 
-# add channel dim
 X = X[..., np.newaxis]
 
 print("Dataset shape:", X.shape)
 
-# split
+
 X_train, X_test, y_train, y_test = train_test_split(
     X, y,
     test_size=0.2,
@@ -68,7 +63,6 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
-# Better CNN
 model = Sequential([
     Conv2D(32, (3,3), activation='relu', padding='same', input_shape=X.shape[1:]),
     BatchNormalization(),
@@ -99,14 +93,13 @@ model.compile(
     metrics=['accuracy']
 )
 
-# Stop when no improvement
 early_stop = EarlyStopping(
     monitor='val_accuracy',
     patience=5,
     restore_best_weights=True
 )
 
-# Train
+
 history = model.fit(
     X_train, y_train,
     validation_data=(X_test, y_test),
@@ -116,7 +109,6 @@ history = model.fit(
     verbose=1
 )
 
-# Final evaluation
 loss, acc = model.evaluate(X_test, y_test, verbose=0)
 print(f"\nFinal Accuracy: {acc*100:.2f}%")
 
