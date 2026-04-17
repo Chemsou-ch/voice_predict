@@ -1,0 +1,8 @@
+venv311/
+__pycache__/
+*.pyc
+*.h5
+*.keras
+temp.wav
+speech_commands.tar.gz
+speech_commands_full/
